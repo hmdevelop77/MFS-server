@@ -3,10 +3,11 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import authService from "../../services/auth.service";
 
+
 function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
+  const [username, setName] = useState("");
   const [errorMessage, setErrorMessage] = useState(undefined);
 
   const navigate = useNavigate();
@@ -18,20 +19,21 @@ function SignupPage() {
   const handleSignupSubmit = (e) => {
     e.preventDefault();
     // Create an object representing the request body
-    const requestBody = { email, password, name };
+    const requestBody = { email, password, username };
 
     // Send a request to the server using axios
-    /* 
-    const authToken = localStorage.getItem("authToken");
-    axios.post(
-      `${process.env.REACT_APP_SERVER_URL}/auth/signup`, 
-      requestBody, 
-      { headers: { Authorization: `Bearer ${authToken}` },
-    })
-    .then((response) => {})
-    */
+    
+    // const authToken = localStorage.getItem("authToken");
+    // axios.post(
+    //   `${process.env.REACT_APP_SERVER_URL}/auth/signup`, 
+    //   requestBody, 
+    //   { headers: { Authorization: `Bearer ${authToken}` },
+    // })
+    // .then((response) => {})
+    
 
     // Or using a service
+
     authService
       .signup(requestBody)
       .then((response) => {
@@ -62,7 +64,7 @@ function SignupPage() {
         />
 
         <label>Name:</label>
-        <input type="text" name="name" value={name} onChange={handleName} />
+        <input type="text" name="username" value={username} onChange={handleName} />
 
         <button type="submit">Sign Up</button>
       </form>

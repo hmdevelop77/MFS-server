@@ -31,6 +31,12 @@ class AuthService {
     // return axios.post("http://localhost:5005/auth/singup");
   };
 
+  edit = (requestBody) => {
+    return this.api.put("/auth/profile", requestBody);
+    // same as
+    // return axios.post("http://localhost:5005/auth/singup");
+  };
+
   verify = () => {
     return this.api.get("/auth/verify");
     // same as
