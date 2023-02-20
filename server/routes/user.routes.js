@@ -10,13 +10,11 @@ const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
 
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
+const Budget = require("../models/Budget.model");
+const { find } = require("../models/User.model");
 
 
-
-
-
-// const {
-// } = require("../middleWare/route-guard");
+// const { } = require("../middleWare/route-guard");
 
 
 
@@ -24,46 +22,16 @@ const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
 const saltRounds = 10;
 
-//signup page for client
-router.get("/signup", (req, res, next) => {
-  try {
-    console.log("this will be in the frontend")
-  } catch (error) {
-    next(error);
-  }
-});
-
-
-// get client profile
-router.get("/:userid", (req, res, next) => {
-  try {
-    res.render("./client/profil-client");
-  } catch (error) {
-    next(error);
-  }
-});
-
-
-//get the login page
-router.get("/login", (req, res, next) => {
-  try {
-    console.log("this will be frontend")
-  } catch (error) {
-    next(error);
-  }
-});
-
-
 
 
 //the logout of the client
-router.post("/logout", (req, res, next) => {
-  req.logout((error) => {
-    if (error) {
-      next(error);
-    }
-  });
-});
+// router.post("/logout", (req, res, next) => {
+//   req.logout((error) => {
+//     if (error) {
+//       next(error);
+//     }
+//   });
+// });
 //routes for google auth
 
 
@@ -82,9 +50,9 @@ router.post("/logout", (req, res, next) => {
 // );
 
 // GET - gets all the files
-router.get("/files", isAuthenticated, async (req, res) => {
+router.get("/podcasts", isAuthenticated, async (req, res) => {
     try {
-      const response= await File.find().sort( { "title": -1 } )
+      const response= await File.find().sort( { "title": -1 } ).populate({ path: "comments" });
       res.status(200).json(response);
     } catch (e) {
         res.status(200).json({ message: e });
@@ -92,32 +60,40 @@ router.get("/files", isAuthenticated, async (req, res) => {
   });
 
   //GET - gets one file
-router.get("/files/:fileId",isAuthenticated, async (req, res) => {
+// router.get("/files/:fileId",isAuthenticated, async (req, res) => {
+//     try {
+//       const response = await File.findById(req.params.fileId);
+//       res.status(200).json(response);
+//     } catch (e) {
+//       res.status(200).json({ message: e });
+//     }
+//   });
+
+  //GET - budget saved by the user
+
+  router.get("/budget",isAuthenticated,async(req,res,next)=>{
     try {
-      const response = await File.findById(req.params.fileId);
-      res.status(200).json(response);
+      const budget = await Budget.find()
+      res.status(200).json(budget);
     } catch (e) {
       res.status(200).json({ message: e });
     }
-  });
+  })
 
 
-  //POST - create a comment by user or admin       not done yet
-router.post("/files/comment", isAuthenticated, async (req, res, next) => {
+  //PUT - update budget by user 
+router.put("/budget", isAuthenticated, async (req, res, next) => {
   try {
-    const { text, id } = req.body;
-    // if(text===""){
-    //    res.render("./client/audios-client", {
-    //     errorMessage: "Please enter a comment",
-    //   });
-    // }
-    const commentBody = { username: req.user.username, text, post: id };
-    const comment = await Comment.create(commentBody);
-    const response = await File.findByIdAndUpdate(
+
+    const { item, price } = req.body;
+    const {userOfBudget} = req.payload._id;
+    const budgetBody = {  item, price,userOfBudget };
+    const createdBudget = await Budget.create(budgetBody);
+    const response = await Budget.findByIdAndUpdate(
       id,
       {
         $push: {
-          comments: comment._id,
+          items: createdBudget._id,
         },
       },
       { new: true }
@@ -126,47 +102,57 @@ router.post("/files/comment", isAuthenticated, async (req, res, next) => {
   } catch (e) {
     res.status(200).json({ message: e });
   }
+})
+
+// GET - read comments
+
+router.get("/podcasts/comment",isAuthenticated,async(req,res)=>{
+  try {
+    const comments = await Comment.find()
+
+    res.status(200).json(comments);
+  } catch (e) {
+    res.status(200).json({ message: e });
+  }
+})
+
+
+// POST - create Comment 
+router.post("/podcasts/comment", isAuthenticated, async (req, res, next) => {
+  try {
+    const { text, postId } = req.body;
+
+    const userId = req.payload.username;
+    const commentBody = { username: userId, text, post: postId };
+
+    const comment = await Comment.create(commentBody);
+    const response = await File.findByIdAndUpdate(
+      postId,
+      {
+        $push: {
+          comments: comment.username,
+        },
+      },
+      { new: true }
+    );
+   
+    res.status(200).json(response);
+  } catch (e) {
+    res.status(200).json({ message: e });
+  }
 });
 
-//Delete comment by user or admin    not done yet
-router.delete(
-  "/files/:commentId",
-  isAuthenticated,
-  async (req, res, next) => {
-    try {
-      const { commentId } = req.params;
-      const commentOfUser = await Comment.findById(commentId);
-      if (commentOfUser.username === req.user.username || req.user.admin) {
-        const comment = await Comment.findByIdAndDelete(commentId);
-        const response = await File.findByIdAndUpdate(
-          commentId,
-          {
-            $pull: {
-              comments: comment._id,
-            },
-          },
-          { new: true }
-        );
-        res.status(200).json(response);
-      } else {
-        res.status(200).json(response);
-      }
-    } catch (e) {
-        res.status(200).json({ message: e });
-    }
-  }
-);
 
-//Update comment by user or admin    not done yet
-
+//PUT - update comment by user or admin    not done yet
 router.put(
-  "/files/:commentId",
+  "/podcasts/:commentId",
   isAuthenticated,
   async (req, res, next) => {
     try {
       const { commentId } = req.params;
       const commentOfUser = await Comment.findById(commentId);
-      if (commentOfUser.username === req.user.username || req.user.admin) {
+      const userId = req.payload._id;
+      if (commentOfUser.username === userId.username || userId.admin) {
         const comment = await Comment.findByIdAndUpdate(commentId);
         const response = await File.findByIdAndUpdate(
           commentId,
@@ -187,16 +173,39 @@ router.put(
   }
 );
 
-//delete profile
-router.delete("/profile", async (req, res, next) => {
-  try {
-    const client = req.user._id;
-    await User.findByIdAndDelete(client);
-    res.redirect("/");
-  } catch (error) {
-    next();
+
+//DELETE - Delete comment by user or admin    not done yet
+router.delete(
+  "/podcasts/:commentId",
+  isAuthenticated,
+  async (req, res, next) => {
+    try {
+      const { commentId } = req.params;
+      const commentOfUser = await Comment.findById(commentId);
+      const userId = req.payload._id;
+      if (commentOfUser.username === userId.username || userId.admin) {
+        const comment = await Comment.findByIdAndDelete(commentId);
+        const response = await File.findByIdAndUpdate(
+          commentId,
+          {
+            $pull: {
+              comments: comment._id,
+            },
+          },
+          { new: true }
+        );
+        res.status(200).json(response);
+      } else {
+        res.status(200).json(response);
+      }
+    } catch (e) {
+        res.status(200).json({ message: e });
+    }
   }
-});
+);
+
+
+
 
 // search bar
 router.get("/files/search", async (req, res, next) => {

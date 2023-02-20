@@ -14,25 +14,20 @@ const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 
 const mongoose = require("mongoose");
 
-// const {
-//   isLoggedIn,
-//   isLoggedOut,
-//   isAdmin,
-// } = require("../middleWare/route-guard");
 
 // const { findById } = require("../models/client-model");
 
 // The admin is already a user => user routes
 
 // // GET - gets all the files
-// router.get("/files", isAuthenticated, async (req, res) => {
-//     try {
-//       const response= await File.find().sort( { "title": -1 } )
-//       res.status(200).json(response);
-//     } catch (e) {
-//         res.status(200).json({ message: e });
-//     }
-//   });
+router.get("/podcasts", isAuthenticated, async (req, res) => {
+    try {
+      const response= await File.find().sort( { "title": -1 } )
+      res.status(200).json(response);
+    } catch (e) {
+        res.status(200).json({ message: e });
+    }
+  });
 
 //   //GET - gets one file
 // router.get("/files/:fileId",isAuthenticated, async (req, res) => {
@@ -46,20 +41,33 @@ const mongoose = require("mongoose");
 
 
   //POST - create a file
-  router.post(
-    "/files",isAuthenticated,
-    fileUploader.single("file"),
-    async (req, res) => {
-      try {
-        const { title ,description } = req.body;
-        const file = { title, description, file: req.file.path };
-        const response = await File.create(file);
-        res.status(200).json(response);
-      } catch (e) {
-        res.status(200).json({ message: e });
+
+  router.post("/file",isAuthenticated ,  async (req, res) => {
+    try {
+     
+      const userId = req.payload._id
+      const { title, description,file_URL } = req.body;
+      if (!title || !file_URL) {
+        res.status(400).json({ message: "missing fields" });
+        return;
       }
+      const response = await File.create({ title, description,file_URL });
+      res.status(200).json(response);
+    } catch (e) {
+      res.status(200).json({ message: e });
     }
-  );
+  });
+
+
+  router.post("/upload", fileUploader.single("filename"), async (req, res) => {
+    try {
+      console.log("this is the upload")
+      res.status(200).json({ fileUrl: req.file.path});
+    } catch (e) {
+      res.status(500).json({ message: "An error occured while returning the file path" });
+    }
+  });
+
 
  // DELETE - delete a file
  

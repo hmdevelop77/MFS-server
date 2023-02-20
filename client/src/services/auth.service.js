@@ -37,11 +37,19 @@ class AuthService {
     // return axios.post("http://localhost:5005/auth/singup");
   };
 
+  delete = () => {
+    return this.api.delete("/auth/profile/delete");
+    // same as
+    // return axios.post("http://localhost:5005/auth/singup");
+  };
+
   verify = () => {
     return this.api.get("/auth/verify");
     // same as
     // return axios.post("http://localhost:5005/auth/verify");
   };
+
+ 
 }
 
 // Create one instance (object) of the service

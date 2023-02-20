@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import authService from "../../services/auth.service";
 
 function ProfilePage() {
-  const { isLoggedIn, user, logOutUser } = useContext(AuthContext);
+  const { isLoggedIn, user, logOutUser, setUser } = useContext(AuthContext);
 
   const [errorMessage, setErrorMessage] = useState(undefined);
 
@@ -48,7 +48,24 @@ function ProfilePage() {
       .edit(requestBody)
       .then((response) => {
         // If the POST request is successful redirect to the login page
+        setUser(response.data)
+
         navigate("/profile");
+      })
+      .catch((error) => {
+        // If the request resolves with an error, set the error message in the state
+        const errorDescription = error.response.data.message;
+        setErrorMessage(errorDescription);
+      });
+  };
+  const handleDeleteProfilSubmit = (e) => {
+    e.preventDefault();
+    
+    authService
+      .delete()
+      .then((response) => {
+        // If the Delete request is successful redirect to the home page
+        navigate("/");
       })
       .catch((error) => {
         // If the request resolves with an error, set the error message in the state
@@ -98,6 +115,10 @@ function ProfilePage() {
       </form>
 
       {errorMessage && <p className="error-message">{errorMessage}</p>}
+      <form onSubmit={handleDeleteProfilSubmit}>
+      <button type="submit">Delete profile</button>
+      </form>
+      
     </div>
   );
 }

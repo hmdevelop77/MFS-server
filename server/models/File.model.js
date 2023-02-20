@@ -5,7 +5,7 @@ const { Schema, model } = require("mongoose");
 const fileSchema = new Schema({
   title: { type: String, required: true },
   description: { type: String },
-  file: {
+  file_URL: {
     type: String,
     required: true,
   },

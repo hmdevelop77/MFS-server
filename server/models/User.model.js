@@ -27,7 +27,9 @@ const userSchema = new Schema(
       required: [true, "Password is required."],
     },
     googleId: String,
+    budget : [{ type: Schema.Types.ObjectId, ref: "Budget"}], 
   },
+ 
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,

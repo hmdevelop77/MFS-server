@@ -1,23 +1,30 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 
-import HomePage from "./pages/HomePage/HomePage";
+
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import SignupPage from "./pages/SignupPage/SignupPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
+import BudgetPage from "./pages/BudgetPage/BudgetPage"
 
-import Navbar from "./components/Navbar/Navbar";
+
+
+
+
+
 import IsPrivate from "./components/IsPrivate/IsPrivate";
 import IsAnon from "./components/IsAnon/IsAnon";
+import PodcastPage from "./pages/PodcastPage/PodcastPage";
+import Sidebar from "./components/SideBar/SideBar";
+
+
 
 function App() {
   return (
-    <div className="App">
-      <Navbar />
+    <div className="App"> 
 
+ <Sidebar/>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-
         <Route
           path="/profile"
           element={
@@ -41,6 +48,22 @@ function App() {
             <IsAnon>
               <LoginPage />
             </IsAnon>
+          }
+        />
+        <Route
+          path="budget"
+          element={
+            <IsPrivate>
+              <BudgetPage />
+            </IsPrivate>
+          }
+        />
+        <Route
+          path="Podcasts"
+          element={
+            <IsPrivate>
+              <PodcastPage />
+            </IsPrivate>
           }
         />
       </Routes>

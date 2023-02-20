@@ -129,14 +129,15 @@ router.post("/login", (req, res, next) => {
 router.put("/profile",isAuthenticated, async (req, res, next) => {
   try {
     const { newUsername, newEmail, oldPassword, newPassword } = req.body;
-
     const userId = req.payload._id;
+    console.log(userId)
     const profile = await User.findById(userId);
+    let updatedUser;
     if (!oldPassword && !newPassword) {
-      const clientUpdated = await User.findByIdAndUpdate(userId, {
+      updatedUser = await User.findByIdAndUpdate(userId, {
         username: newUsername,
         email: newEmail,
-      });
+      }, {new: true});
     } else {
       if (bcrypt.compareSync(oldPassword, profile.passwordHash)) {
         //hash the password
@@ -150,15 +151,17 @@ router.put("/profile",isAuthenticated, async (req, res, next) => {
         }
         const salt = await bcrypt.genSalt(saltRounds);
         const newPasswordHash = await bcrypt.hash(newPassword, salt);
-        await User.findByIdAndUpdate(client._id, {
+        updateUser = await User.findByIdAndUpdate(client._id, {
           username: newUsername,
           email: newEmail,
           passwordHash: newPasswordHash,
-        });
+        }, {new: true});
       } else {
         return res.status(401).json({ message: "Unable to authenticate the user" });
       }
     }
+
+    res.status(200).json(updatedUser)
   } catch (e) {
     if (e.code === 11000) {
       // to check if it exist
@@ -169,7 +172,17 @@ router.put("/profile",isAuthenticated, async (req, res, next) => {
   }
 });
 
+// Delete  /auth/profile - update user profile change username or email or password
 
+router.delete("/profile/delete",isAuthenticated, async (req, res, next) => {
+  try {
+    const userId = req.payload._id;
+    await User.findByIdAndDelete(userId);
+    res.status(201).json({ user: req.payload.username });
+  } catch (e) {
+    res.status(401).json({ message: "Can not delete the user." });
+  }
+});
 
 // GET  /auth/verify  -  Used to verify JWT stored on the client
 router.get("/verify", isAuthenticated, (req, res, next) => {

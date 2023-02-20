@@ -1,3 +1,22 @@
+import * as React from 'react';
+import Divider from '@mui/material/Divider';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import Box from '@mui/material/Box';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import HomeIcon from '@mui/icons-material/Home';
+import PeopleIcon from '@mui/icons-material/People';
+import DnsRoundedIcon from '@mui/icons-material/DnsRounded';
+import PermMediaOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActual';
+import PublicIcon from '@mui/icons-material/Public';
+import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
+import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent';
+import TimerIcon from '@mui/icons-material/Timer';
+import SettingsIcon from '@mui/icons-material/Settings';
+import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
 import "./Navbar.css";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
@@ -22,6 +41,9 @@ function Navbar() {
             <button>Profile</button>
             {/* <img src="https://picsum.photos/id/402/200/300" style={{ width: 50, height: 50, borderRadius: 25}} alt="profile" /> */}
           </Link>
+          <Link to="/budget">
+            <button>Budget</button>
+          </Link>
 
           <span>{user && user.name}</span>
         </>
@@ -44,3 +66,4 @@ function Navbar() {
 }
 
 export default Navbar;
+
