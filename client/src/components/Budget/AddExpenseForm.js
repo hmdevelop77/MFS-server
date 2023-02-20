@@ -2,18 +2,19 @@ import React, { useContext, useState } from "react";
 import { BudgetContext } from "../../context/budget.context";
 import { v4 as uuiv4 } from "uuid";
 import {updateBudget} from "../../services/example.service"
+import { useNavigate } from "react-router-dom";
 
 
 export default function AddExpenseForm() {
   const { dispatch } = useContext(BudgetContext);
-  const [item, setName] = useState("");
-  const [price, setCost] = useState("");
-
+  const [item, setItem] = useState("");
+  const [price, setPrice] = useState("");
+ const navigate = useNavigate()
   function HandleChangedName(event) {
-    setName(event.target.value);
+    setItem(event.target.value);
   }
   function HandleChangedCost(event) {
-    setCost(event.target.value);
+    setPrice(event.target.value);
   }
 
   async function HandleSubmitForm(event) {
@@ -33,6 +34,7 @@ await updateBudget({
   item,
   price,
 })
+navigate("/budget");
   }
 
   return (
