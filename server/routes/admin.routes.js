@@ -61,7 +61,7 @@ router.get("/podcasts", isAuthenticated, async (req, res) => {
 
   router.post("/upload", fileUploader.single("filename"), async (req, res) => {
     try {
-      console.log("this is the upload")
+      console.log("File uploaded")
       res.status(200).json({ fileUrl: req.file.path});
     } catch (e) {
       res.status(500).json({ message: "An error occured while returning the file path" });

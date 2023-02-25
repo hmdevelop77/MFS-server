@@ -22,8 +22,6 @@ export default function DisplayComment({fileId, comments, handleGetAllComments})
             <ListItemText
               primary={comment.username}
               secondary={
-           
-       
                   <Typography
                     sx={{ display: "inline" }}
                     component="span"
@@ -32,8 +30,6 @@ export default function DisplayComment({fileId, comments, handleGetAllComments})
                   >
                    {comment.text} 
                   </Typography>
-              
-              
               }
             />
  <DeleteComment handleGetAllComments={handleGetAllComments} fileId={fileId} commentId={comment._id}></DeleteComment> 

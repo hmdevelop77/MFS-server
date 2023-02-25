@@ -53,6 +53,9 @@ class ExampleService {
    uploadFile = async(uploadData) => {
     return this.api.post(`${process.env.REACT_APP_SERVER_URL}/upload`, uploadData);
   };
+   deleteFile = async(fileId) => {
+    return this.api.delete(`${process.env.REACT_APP_SERVER_URL}/files/${fileId}`);
+  };
 
   getAllPodcasts = async() => {
     return this.api.get(`${process.env.REACT_APP_SERVER_URL}/podcasts`, {
@@ -61,6 +64,8 @@ class ExampleService {
   };
 
 
+
+  
   // Budget section
    getBudget = async() => {
     return axios.get(`${process.env.REACT_APP_SERVER_URL}/budget`, {

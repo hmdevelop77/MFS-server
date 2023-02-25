@@ -41,7 +41,7 @@ const Budget = require("../models/Budget.model");
 router.get("/podcasts", isAuthenticated, async (req, res) => {
   try {
     const response = await File.find().populate('comments');
-    console.log("this response:",response)
+  
     res.status(200).json(response);
   } catch (e) {
     res.status(200).json({ message: e });
@@ -58,30 +58,34 @@ router.get("/podcasts", isAuthenticated, async (req, res) => {
 //     }
 //   });
 
-// router.get("/budget/:userId", isAuthenticated, async (req, res) => {
-//   try {
-//     const {userId} = req.params
-//     console.log("user")
-//     const response = await User.findById(userId).populate('Budget');
-//   console.log("unknow:",response)
-//     res.status(200).json(response);
-//   } catch (e) {
-//     res.status(200).json({ message: e });
-//   }
-// });
+router.get("/budget", isAuthenticated, async (req, res) => {
+  try {
+   const userId = req.payload._id
+
+    const response = await User.findById(userId).populate("budget")
+ 
+
+    res.status(200).json(response.budget);
+  } catch (e) {
+    res.status(200).json({ message: e });
+  }
+});
 
 
 //section of the budget
 //GET - budget saved by the user
 
-router.get("/budget", isAuthenticated, async (req, res, next) => {
-  try {
-    const budget = await Budget.find()
-    res.status(200).json(budget);
-  } catch (e) {
-    res.status(200).json({ message: e });
-  }
-});
+// router.get("/budget", isAuthenticated, async (req, res, next) => {
+//   try {
+//     const budget= await Budget.find()
+
+  
+
+//     res.status(200).json(budget);
+//   } catch (e) {
+//     res.status(200).json({ message: e });
+//   }
+// });
 
 //POST - create expenses by user
 router.post("/budget", isAuthenticated, async (req, res, next) => {

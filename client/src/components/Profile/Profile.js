@@ -20,23 +20,34 @@ function Profile() {
 
   const [newEmail, setnewEmail] = useState(user.email);
   const [newPassword, setnewPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
   const [newUsername, setnewUsername] = useState(user.username);
 
   const navigate = useNavigate();
 
   const handleChangeEmail = (e) => setnewEmail(e.target.value);
-  const handleChangePassword = (e) => setnewPassword(e.target.value);
   const handleChangeUsername = (e) => setnewUsername(e.target.value);
+  const handleChangePassword = (e) => setnewPassword(e.target.value);
+  const handleChangeOldPassword = (e) => setOldPassword(e.target.value);
 
   const handleChangeProfilSubmit = (e) => {
     e.preventDefault();
-    const requestBody = { newEmail, newPassword, newUsername };
+    const requestBody = { newEmail, newPassword, newUsername,oldPassword };
     authService
       .edit(requestBody)
       .then((response) => {
         // If the POST request is successful redirect to the login page
         setUser(response.data);
-        console.log("this is test",  setUser(response.data))
+        if(user.email !== newEmail){
+            
+            console.log("email updated")
+        }
+        if(user.username !== newUsername ){
+            console.log("username updated")
+        }
+        if(newPassword){
+console.log("password updated")
+        }
       })
       .catch((error) => {
         // If the request resolves with an error, set the error message in the state
@@ -139,11 +150,10 @@ function Profile() {
             className="w-80 "
             InputLabelProps={{ style: { fontSize: 19, color: "#6495ED" } }}
             helperText=""
-         
             label="Current password"
-           
+           value={oldPassword}
             type="password"
-            name="password"
+            name="oldPassword"
             onChange={handleChangePassword}
             InputProps={{
               startAdornment: (
@@ -168,12 +178,12 @@ function Profile() {
             className="w-80 "
             InputLabelProps={{ style: { fontSize: 19, color: "#6495ED" } }}
             helperText=""
-         
+            value={newPassword}
             label="New password"
            
             type="password"
             name="newPassword"
-            onChange={handleChangePassword}
+            onChange={handleChangeOldPassword}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -232,7 +242,7 @@ function Profile() {
         <label>Curent password:</label>
         <input
           type="password"
-          name="password"
+          name="oldPassword"
           onChange={handleChangePassword}
         />
 

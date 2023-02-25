@@ -9,32 +9,37 @@ import Container from "@mui/material/Container";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 
-export default function DisplayFiles() {
-  const [files, setFiles] = useState([]);
+import DeleteFile from "./DeleteFile";
 
- const [comments,setComments] = useState()
-
- async function handleGetAllComments(){
-  const response = await exampleService.getAllComments();
-  setComments(response.data);
-}
-
-useEffect(() => {
-  handleGetAllComments();
- },[]);
-
-  async function handleGetAllPodcasts() {
-    const response = await exampleService.getAllPodcasts();
+export default function DisplayFiles(props) {
   
-    setFiles(response.data);
-  }
-  useEffect(() => {
-    handleGetAllPodcasts();
-  }, []);
-
+  const [comments,setComments] = useState()
+  
+//   const [propsfiles, setFiles] = useState([]);
+ 
+//  async function handleGetAllPodcasts(props) {
+//    const response = await exampleService.getAllPodcasts();
+   
+//    setFiles(response.data);
+//   }
+//   useEffect(() => {
+  //   }, []);
+  
+  const handleAllPodcasts = () => props.handleGetAllPodcasts();
+  
+  async function handleGetAllComments(){
+   const response = await exampleService.getAllComments();
+   setComments(response.data);
+ }
+ 
+ useEffect(() => {
+   handleGetAllComments();
+  },[]);
+  
+  
   return (
     <div className="App">
-      {files.map((file) => {
+      {props.files.map((file) => {
         return (
           <Container  maxWidth="sm" key={file._id} >
             <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -55,6 +60,7 @@ useEffect(() => {
                 <audio src={file.file_URL} type={"audio"} controls />
               </Box>
               </div>
+              <DeleteFile handleAllPodcasts={handleAllPodcasts}  fileId={file._id}/>
               <DisplayComment handleGetAllComments={handleGetAllComments} fileId={file._id}  comments={comments}  />
               <AddComment handleGetAllComments={handleGetAllComments} fileId={file._id} />
             </Box>

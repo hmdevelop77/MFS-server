@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 
 
 
-export default function AddFile() {
+export default function AddFile(props) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [file_URL, setFile] = useState(null);
@@ -27,7 +27,7 @@ export default function AddFile() {
       function handleFileSelect(event) {
         setFile(event.target.files[0]);
       }
-//  const [files, setFiles] = useState([]);
+
       async function handleSubmitForm(event) {
         event.preventDefault();
       
@@ -43,12 +43,13 @@ export default function AddFile() {
           description,
           file_URL: response.data.fileUrl,
         });
+        
+        props.handleGetAllPodcasts()
+
         alert("file uploaded")
         setTitle("")
         setDescription("")
         setFile(null)
-      
-        
       }
       
   return (

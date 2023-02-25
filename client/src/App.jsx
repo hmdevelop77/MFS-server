@@ -20,6 +20,7 @@ import Sidebar from "./components/SideBar/SideBar";
 
 
 
+
 function App() {
   return (
     <div className="App"> 
@@ -51,6 +52,7 @@ function App() {
             </IsAnon>
           }
         />
+       
         <Route
           path="budget"
           element={

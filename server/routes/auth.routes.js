@@ -182,6 +182,17 @@ router.delete("/profile/delete",isAuthenticated, async (req, res, next) => {
   }
 });
 
+// GET   /auth/profile - get the user from data base to update
+router.get("/profile/",isAuthenticated, async (req, res, next) => {
+  try {
+    const userId = req.payload._id;
+  const  reponse = await User.findById(userId);
+    res.status(201).json({ reponse });
+  } catch (e) {
+    res.status(401).json({ message: "Can not find the user." });
+  }
+});
+
 // GET  /auth/verify  -  Used to verify JWT stored on the client
 router.get("/verify", isAuthenticated, (req, res, next) => {
   // If JWT token is valid the payload gets decoded by the
