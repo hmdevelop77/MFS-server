@@ -2,6 +2,7 @@ import { createContext, useReducer, useState, useEffect } from "react";
 import { exampleService } from "../services/example.service";
 
 const BudgetReduceur = (state, action) => {
+  
   switch (action.type) {
     case "ADD_EXPENSE":
       return {
@@ -12,8 +13,8 @@ const BudgetReduceur = (state, action) => {
       return {
         ...state,
         expenses: state.expenses.filter(
-          (expense) => expense.id !== action.payload
-        ),
+          (expense) => expense._id !== action.payload
+          ),
       };
     case "SET_BUDGET":
       return {
@@ -43,7 +44,6 @@ export const BudgetProvider = (props) => {
 			type: 'GET_ALL_EXPENSES',
 			payload: response.data,
 		});
-    console.log("expenses", response.data)
     return response.data;
   }
 

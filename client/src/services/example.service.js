@@ -78,6 +78,12 @@ class ExampleService {
     });
   };
 
+   deleteItem = async(itemId) => {
+    return axios.delete(`${process.env.REACT_APP_SERVER_URL}/budget/${itemId}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("authToken")}` },
+    });
+  };
+
 
   // Comments section
   getAllComments = () =>{

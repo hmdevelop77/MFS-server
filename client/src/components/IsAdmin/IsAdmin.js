@@ -6,8 +6,8 @@ import { AuthContext } from "../../context/auth.context";
 import Loading from "../Loading/Loading";
 
 function IsAdmin({ children }) {
-  const { isAdmin, isLoading } = useContext(AuthContext);
 
+  const { isLoggedIn, user, logOutUser, setUser,isAdmin,isLoading } = useContext(AuthContext);
   // If the authentication is still loading ⏳
   if (isLoading) {
     return <Loading />;

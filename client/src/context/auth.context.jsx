@@ -5,6 +5,7 @@ const AuthContext = createContext();
 
 function AuthProviderWrapper(props) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
 
@@ -36,12 +37,14 @@ function AuthProviderWrapper(props) {
           // Update state variables
           setIsLoggedIn(true);
           setIsLoading(false);
+          setIsAdmin(false);
           setUser(user);
         })
         .catch((error) => {
           // If the server sends an error response (invalid token) ❌
           // Update state variables
           setIsLoggedIn(false);
+          setIsAdmin(false);
           setIsLoading(false);
           setUser(null);
         });
@@ -49,6 +52,7 @@ function AuthProviderWrapper(props) {
       // If the token is not available
       setIsLoggedIn(false);
       setIsLoading(false);
+      setIsAdmin(false);
       setUser(null);
     }
   };

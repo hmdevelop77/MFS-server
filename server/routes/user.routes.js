@@ -4,13 +4,14 @@ const router = express.Router();
 const User = require("../models/User.model");
 const File = require("../models/File.model");
 const Comment = require("../models/Comment.model");
+const Budget = require("../models/Budget.model");
+
 const fileUploader = require("../config/cloudinary.config");
 const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
 
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
-const Budget = require("../models/Budget.model");
 // const { find } = require("../models/User.model");
 
 //the logout of the client
@@ -41,7 +42,6 @@ const Budget = require("../models/Budget.model");
 router.get("/podcasts", isAuthenticated, async (req, res) => {
   try {
     const response = await File.find().populate('comments');
-  
     res.status(200).json(response);
   } catch (e) {
     res.status(200).json({ message: e });
@@ -58,13 +58,16 @@ router.get("/podcasts", isAuthenticated, async (req, res) => {
 //     }
 //   });
 
+
+
+//Section of the budget
+
+
+//GET - budget saved by the user
 router.get("/budget", isAuthenticated, async (req, res) => {
   try {
    const userId = req.payload._id
-
     const response = await User.findById(userId).populate("budget")
- 
-
     res.status(200).json(response.budget);
   } catch (e) {
     res.status(200).json({ message: e });
@@ -72,20 +75,17 @@ router.get("/budget", isAuthenticated, async (req, res) => {
 });
 
 
-//section of the budget
 //GET - budget saved by the user
-
 // router.get("/budget", isAuthenticated, async (req, res, next) => {
 //   try {
 //     const budget= await Budget.find()
-
-  
-
 //     res.status(200).json(budget);
 //   } catch (e) {
 //     res.status(200).json({ message: e });
 //   }
 // });
+
+
 
 //POST - create expenses by user
 router.post("/budget", isAuthenticated, async (req, res, next) => {
@@ -109,11 +109,27 @@ router.post("/budget", isAuthenticated, async (req, res, next) => {
   }
 });
 
-router.delete("/budget",isAuthenticated,async(req,res,next)=>{
+
+router.delete("/budget/:itemId",isAuthenticated,async(req,res,next)=>{
   try {
+    const {itemId} = req.params;
+    console.log("item id:",itemId)
+    const deletedItem = await Budget.findByIdAndDelete(itemId) 
     
-  } catch (error) {
-    
+    console.log("item id:",deletedItem)
+
+    const response = await User.findByIdAndUpdate(
+      deletedItem,
+      {  
+        $pull: { budget: itemId},
+      },
+      { new: true }
+    );
+    console.log("budget res :",response)
+    res.status(200).json(response);
+  } catch (e) {
+    console.log("error",e)
+    res.status(200).json({ message: e });
   }
 })
 
@@ -185,7 +201,7 @@ router.put(
   }
 );
 
-//DELETE - Delete comment by user or admin    not done yet
+//DELETE - Delete comment by user or admin    
 router.delete(
   "/podcasts/comment/:commentId/:fileId",
   isAuthenticated,
@@ -194,6 +210,7 @@ router.delete(
       const { commentId, fileId } = req.params;
       const commentOfUser = await Comment.findById(commentId);
       const loggedUser = req.payload;
+    
       if (commentOfUser.username === loggedUser.username || loggedUser.admin) {
         const comment = await Comment.findByIdAndDelete(commentId);
         const response = await File.findByIdAndUpdate(
@@ -203,7 +220,7 @@ router.delete(
           },
           { new: true }
         );
-       
+       console.log("comment res :",response)
         res.status(200).json(response);
       } else {
         res.status(200).json(response);

@@ -1,15 +1,22 @@
 import React, { useContext } from "react";
 import { TiDelete } from "react-icons/ti";
 import { BudgetContext } from "../../context/budget.context";
+import { exampleService } from "../../services/example.service";
 
 export default function ExpenseItem(props) {
  const {dispatch}= useContext(BudgetContext)
 
-function handleDeleteItem(){
+const itemId = props.id
+async function handleDeleteItem(){
     dispatch({
       type:"DELETE_EXPENSE",
-      payload:props.id,
+      payload:itemId,
     });
+
+ console.log("item:",itemId)
+    await exampleService.deleteItem(
+      itemId
+    );
    };
  
 
