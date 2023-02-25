@@ -1,36 +1,56 @@
-import React, { useState } from 'react'
-import { createComment } from '../../services/example.service';
+import React, { useState } from "react";
+import { exampleService } from "../../services/example.service";
 
-export default function AddComment() {
-   
-   const[text,setText]=useState("")
-   const[postId,setpostId]=useState("")
+import IconButton from "@mui/material/IconButton";
+import AddCommentIcon from '@mui/icons-material/AddComment';
+import Textarea from '@mui/joy/Textarea';
 
+export default function AddComment(props) {
+  const [text, setText] = useState("");
 
- 
-   function handleGetText(event){
+  function handleGetText(event) {
     setText(event.target.value);
-   }
-   function handleGetId(event){
-    setpostId(event.target.value);
-   }
-  
-  
-  
-  async function handleSubmitForm(){
-    await createComment({
-        text,
-        postId
-      });  
-    }
+  }
+
+  async function handleSubmitForm(e) {
+    e.preventDefault();
+    await exampleService.createComment({
+      text,
+      postId: props.fileId,
+    });
+    props.handleGetAllComments()
+    setText("")
+  }
+
 
   return (
     <>
-<form onSubmit={handleSubmitForm}>
-<textarea onChange={handleGetText} name="text" id="text" required></textarea>
-    <input   type="text" value="postId" id="postId" name="postId" hidden />
-    <button type='submit' >Comment</button>
-</form>
+      <form onSubmit={handleSubmitForm}>
+      <Textarea
+      placeholder="Type something ...."
+  color="primary"
+  minRows={3}
+  size="lg"
+  variant="outlined"
+  onChange={handleGetText}
+          value={text}
+          name="text"
+          id="text"
+          required
+/>      
+
+        {/* <input type="text" id={postId} onChange={handleGetId} name={postId} hidden /> */}
+        <IconButton type="submit"  >
+     
+        Send
+       
+        </IconButton>
+    
+        {/* <button type="submit">Comment</button> */}
+      </form>
     </>
-  )
+  );
 }
+
+
+

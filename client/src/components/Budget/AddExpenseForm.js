@@ -1,15 +1,14 @@
 import React, { useContext, useState } from "react";
 import { BudgetContext } from "../../context/budget.context";
 import { v4 as uuiv4 } from "uuid";
-import {updateBudget} from "../../services/example.service"
-import { useNavigate } from "react-router-dom";
+import { exampleService } from "../../services/example.service";
 
 
 export default function AddExpenseForm() {
   const { dispatch } = useContext(BudgetContext);
   const [item, setItem] = useState("");
   const [price, setPrice] = useState("");
- const navigate = useNavigate()
+
   function HandleChangedName(event) {
     setItem(event.target.value);
   }
@@ -30,11 +29,12 @@ export default function AddExpenseForm() {
       payload: expense,
     });
 
-await updateBudget({
-  item,
-  price,
-})
-navigate("/budget");
+    await exampleService.addExpenses({
+      item,
+      price,
+    });
+    setItem("");
+    setPrice("");
   }
 
   return (

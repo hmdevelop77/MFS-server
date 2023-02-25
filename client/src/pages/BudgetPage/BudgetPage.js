@@ -17,10 +17,10 @@ export default function BudgetPage() {
           <Budget />
         </div>
         <div className="col-sm">
-          <Remaining />
+          {/* <Remaining /> */}
         </div>
         <div className="col-sm">
-          <ExpenseTotal />
+          {/* <ExpenseTotal /> */}
         </div>
       </div>
       <h3 className="mt-3"> Expenses</h3>

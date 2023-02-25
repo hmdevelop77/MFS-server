@@ -28,7 +28,7 @@ export default function ExpenseList() {
         onChange={handleChange}
       />
       <ul className="list-group">
-        {filteredExpenses.map((expense) => (
+        {filteredExpenses.length > 0 && filteredExpenses.map((expense) => (
           <ExpenseItem
             id={expense.id}
             item={expense.item}

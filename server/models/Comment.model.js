@@ -3,7 +3,7 @@ const { Schema, model } = require("mongoose");
 const commentsSchema = new Schema({
     username: { type: String, required: true },
     text: {type: String,required: true},
-    post: {type: Schema.Types.ObjectId,ref:"File" },
+    postId: { type: String, required: true },
   });
   
   const Comment = model("Comment", commentsSchema);

@@ -1,5 +1,5 @@
-import { createContext, useReducer,useState, useEffect  } from "react";
-// import {updatedBudget} from "../../services/example.service"
+import { createContext, useReducer, useState, useEffect } from "react";
+import { exampleService } from "../services/example.service";
 
 const BudgetReduceur = (state, action) => {
   switch (action.type) {
@@ -15,42 +15,48 @@ const BudgetReduceur = (state, action) => {
           (expense) => expense.id !== action.payload
         ),
       };
-      case 'SET_BUDGET':
-			return {
-				...state,
-				budget: action.payload,
-			};
+    case "SET_BUDGET":
+      return {
+        ...state,
+        budget: action.payload,
+      };
+
+      case "GET_ALL_EXPENSES":
+      return {
+        ...state,
+        expenses: action.payload
+      };
     default:
       return state;
   }
 };
 
-//  function allItems(){
-//   const [items, setItems] = useState()
-//   useEffect(()=>{
-//     async function handleGetAllItem(){
-//       const response = await updatedBudget();
-//       setItems(response.data);
-//     }
-//     handleGetAllItem();
-//   },[])
-//   return (
-    
-//   )
-// }
-
-const initialState = {
-  budget: 2000,
-  expenses: [
-    { id: 12, item: "ship", price: 10 },
-    { id: 13, item: "holys", price: 20 },
-  ],
-};
-
-
 export const BudgetContext = createContext();
 
 export const BudgetProvider = (props) => {
+  const [items, setItems] = useState([]);
+
+  async function handleGetAllItem() {
+    const response = await exampleService.getBudget();
+    setItems(response.data);
+    dispatch({
+			type: 'GET_ALL_EXPENSES',
+			payload: response.data,
+		});
+    console.log("expenses", response.data)
+    return response.data;
+  }
+
+  useEffect(() => {
+    handleGetAllItem();
+  }, []);
+
+
+
+  const initialState = {
+    budget: 2000,
+    expenses: [],
+  };
   const [state, dispatch] = useReducer(BudgetReduceur, initialState);
   return (
     <BudgetContext.Provider

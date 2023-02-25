@@ -1,15 +1,21 @@
 import React, { useRef } from 'react'
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { uploadFile,createFile } from "../../services/example.service";
-import { Button } from 'react-bootstrap';
+
+import { exampleService } from "../../services/example.service";
+import Button from '@mui/material/Button';
+
+
+
+
 export default function AddFile() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [file_URL, setFile] = useState(null);
     const hiddenFileInput = useRef(null)
+
    
-    const navigate = useNavigate();
+   
+
     function handleTitleChange(event) {
         setTitle(event.target.value);
       }
@@ -21,27 +27,30 @@ export default function AddFile() {
       function handleFileSelect(event) {
         setFile(event.target.files[0]);
       }
-
+//  const [files, setFiles] = useState([]);
       async function handleSubmitForm(event) {
         event.preventDefault();
       
     
-        //1. Upload the image through the backend
+        //1. Upload the file through the backend
         const uploadData = new FormData();
         uploadData.append("filename", file_URL);
     
-        const response = await uploadFile(uploadData);
+        const response = await exampleService.uploadFile(uploadData);
        
-        await createFile({
+        await exampleService.createFile({
           title,
           description,
           file_URL: response.data.fileUrl,
         });
         alert("file uploaded")
-        navigate("/podcasts");
+        setTitle("")
+        setDescription("")
+        setFile(null)
+      
+        
       }
-
-
+      
   return (
     <>
     <h1>AddFile</h1>
@@ -62,7 +71,7 @@ export default function AddFile() {
         />
         <label htmlFor="file_URL">File</label>
         <input id="file_URL" type="file" onChange={handleFileSelect}  ref={hiddenFileInput}  />
-        <Button className="button" type="submit">
+        <Button className="button" variant="contained" type="submit">
           Create File
         </Button>
       </form>   

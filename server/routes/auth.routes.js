@@ -82,7 +82,6 @@ router.post("/signup", (req, res, next) => {
 // POST  /auth/login - Verifies email and password and returns a JWT
 router.post("/login", (req, res, next) => {
   const { email, password } = req.body;
-
   // Check if email or password are provided as empty string
   if (email === "" || password === "") {
     res.status(400).json({ message: "Provide email and password." });
@@ -130,8 +129,7 @@ router.put("/profile",isAuthenticated, async (req, res, next) => {
   try {
     const { newUsername, newEmail, oldPassword, newPassword } = req.body;
     const userId = req.payload._id;
-    console.log(userId)
-    const profile = await User.findById(userId);
+    const profile = await User.findById(userId)
     let updatedUser;
     if (!oldPassword && !newPassword) {
       updatedUser = await User.findByIdAndUpdate(userId, {
@@ -151,7 +149,7 @@ router.put("/profile",isAuthenticated, async (req, res, next) => {
         }
         const salt = await bcrypt.genSalt(saltRounds);
         const newPasswordHash = await bcrypt.hash(newPassword, salt);
-        updateUser = await User.findByIdAndUpdate(client._id, {
+        updatedUser = await User.findByIdAndUpdate(client._id, {
           username: newUsername,
           email: newEmail,
           passwordHash: newPasswordHash,
