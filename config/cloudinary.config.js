@@ -11,9 +11,8 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary,
     params:{
-        resource_type:"auto",
-        allowed_formats:["aac","ogg","mp3","wav"],
-        folder:"podcast"
+        folder:"podcast",
+        allowedFormats: ["aac","ogg","mp3","wav"],
     }
 });
 
